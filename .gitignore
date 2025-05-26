@@ -172,3 +172,13 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Видео и модели
+*.mp4
+*.pt
+
+# Папки, которые можно не пушить
+runs/
+venv/
+__pycache__/
+.vscode/
