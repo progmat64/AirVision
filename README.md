@@ -1,155 +1,176 @@
-# YOLOv8 Object Detection, Tracking, and Heatmap
+# YOLOv11: Обнаружение объектов, трекинг и тепловые карты
 
-This project provides a flexible Python-based framework for object detection, tracking, and heatmap generation using the [Ultralytics YOLOv11](https://github.com/ultralytics/ultralytics) model. It supports three main modes:
+![Обзор трекинга](photo/tracking.png)
 
-* **Tracking**: Track and count unique objects across frames, draw trajectories, and display counts.
-* **Predict**: Perform detection and draw bounding boxes (with optional hidden labels).
-* **Heatmap**: Generate and overlay detection heatmaps to visualize object density over time.
+Этот проект представляет собой систему распознавания и отслеживания объектов на Python для обнаружения объектов, их отслеживания и построения тепловых карт с использованием модели [Ultralytics YOLOv11](https://github.com/ultralytics/ultralytics). Поддерживаются три основных режима:
 
-A simple GUI built with PyQt5 allows real-time parameter tuning and visualization.
-
----
-
-## Features
-
-* **Three processing modes**:
-
-  * `tracking`: unique object tracking and counting with trajectory lines.
-  * `predict`: basic detection with customizable bounding boxes and label display.
-  * `heatmap`: accumulation of detections into a heatmap overlay.
-* **Configurable parameters**:
-
-  * Confidence threshold, image size, frame skipping, start frame.
-  * Trajectory tail length & line thickness for tracking.
-  * Heatmap alpha, radius, blur options.
-* **CLI and GUI**:
-
-  * Command-line interface for batch processing.
-  * PyQt5 GUI for interactive control, live display, and progress logging.
-* **Results**:
-
-  * Save annotated frames to disk and compile into a video.
-  * Optional on-screen display during processing.
+* **Tracking** — отслеживание и подсчёт уникальных объектов между кадрами, рисование траекторий и вывод статистики.  
+* **Predict** — классическое обнаружение объектов с ограничивающими рамками (подписи можно скрыть).  
+* **Heatmap** — накопление детекций в тепловую карту, чтобы визуализировать плотность объектов во времени.
 
 ---
 
-## Repository Structure
+## Возможности
+
+### Режимы обработки
+
+#### Tracking
+![Трекинг](photo/tracking.png)
+
+* Отслеживание и подсчёт уникальных объектов.
+* Рисование траекторий заданной длины.
+* Отображение текущего и суммарного количества.
+
+#### Predict
+![Предсказание](photo/predict.png)
+
+* Базовое обнаружение с настраиваемыми рамками.
+* Возможность скрыть подписи классов.
+* Поддержка различных размеров изображений.
+
+#### Heatmap
+![Тепловая карта](photo/heatmap.png)
+
+* Накопление всех детекций в одну тепловую карту.
+* Настраиваемые прозрачность («alpha»), радиус точек и размытие.
+* Подсчёт покрытия («coverage») поля кадра объектами.
+
+### Гибкая настройка параметров
+
+* Порог уверенности, размер изображения, пропуск кадров, стартовый кадр.
+* Длина «хвоста» и толщина линий для трекинга.
+* Параметры тепловой карты: alpha, радиус, размытие.
+
+### CLI и GUI
+
+* **CLI** для пакетной обработки.
+* **PyQt5 GUI** для интерактивного управления параметрами, просмотра видео и логирования.
+
+### Результаты
+
+* Сохранение аннотированных кадров и сборка выходного видео.
+* Опциональный вывод на экран в режиме реального времени.
+
+---
+
+## Структура репозитория
 
 ```
 ├── handler/
-│   ├── base.py            # Abstract base class with core processing loop
-│   ├── config.py          # CLI argument parser
-│   ├── constants.py       # Predefined image sizes
-│   ├── predict.py         # Predictor mode implementation
-│   ├── track.py           # Tracker mode implementation
-│   ├── heatmap.py         # Heatmap mode implementation
-│   └── custom_tracker.yaml# ByteTrack tracker settings
-├── data/                  # Example videos and output folders
-│   ├── videos/
-│   └── results/           # Frames for video saving
-├── gui.py                 # PyQt5 graphical interface
-├── main.py                # Entry point for CLI processing
-├── requirements.txt       # Python dependencies
-└── README.md              # Project documentation (this file)
+│   ├── base.py             # Абстрактный базовый класс c основным циклом
+│   ├── config.py           # Парсер аргументов CLI
+│   ├── constants.py        # Предопределённые размеры изображений
+│   ├── predict.py          # Реализация режима Predict
+│   ├── track.py            # Реализация режима Tracking
+│   ├── heatmap.py          # Реализация режима Heatmap
+│   └── custom_tracker.yaml # Настройки трекера ByteTrack
+├── data/
+│   ├── videos/             # Пример видео
+│   └── results/            # Кадры для сборки видео
+├── gui.py                  # Графический интерфейс PyQt5
+├── main.py                 # Точка входа для CLI
+├── requirements.txt        # Зависимости Python
+└── README.md               # Документация (этот файл)
 ```
 
 ---
 
-## Installation
+## Установка
 
-1. **Clone the repository**:
+1. **Клонируйте репозиторий**:
 
    ```bash
-   ...
+   git clone <URL-репозитория>
+   cd <папка-репозитория>
    ```
 
-2. **Create and activate a virtual environment** (recommended):
+2. **Создайте и активируйте виртуальное окружение** (рекомендуется):
 
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  # on Windows: venv\\Scripts\\activate
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies**:
+3. **Установите зависимости**:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Download or train a YOLOv11 model** and place it under `models/` (e.g., `models/best.pt`).
+4. **Скачайте или обучите модель YOLOv11** и поместите файл ``*.pt`` в папку `models/` (например, `models/best.pt`).
 
 ---
 
-## Command-Line Usage
+## Использование из командной строки
 
-Run `main.py` with the desired mode and options:
+Запустите `main.py`, указав нужный режим и параметры:
 
 ```bash
 python main.py <mode> [options]
 ```
 
-### Modes
+### Режимы
 
 * `tracking`
 * `predict`
 * `heatmap`
 
-### Common Options
+### Общие опции
 
-| Option          | Description                                  | Default               |
-| --------------- | -------------------------------------------- | --------------------- |
-| `-m, --model`   | Path to YOLOv11 model (`.pt`)                 | `models/best.pt`      |
-| `-v, --video`   | Input video file                             | `data/videos/SAR.mp4` |
-| `-s, --save`    | Output video path                            | `data/result.mp4`     |
-| `-S, --show`    | Display frames live instead of saving images | off                   |
-| `-c, --conf`    | Confidence threshold (0.0–1.0)               | `0.01`                |
-| `--imgsz`       | Image size key (`sd`, `s1K`, `s2K`, `s4K`)   | `s1K`                 |
-| `--skip_frames` | Skip frames to speed up processing           | `0`                   |
-| `--start_frame` | Start from this frame index                  | `0`                   |
+| Опция               | Описание                                                  | По умолчанию            |
+| ------------------- | --------------------------------------------------------- | ----------------------- |
+| `-m, --model`       | Путь к модели YOLOv11 (`.pt`)                             | `models/best.pt`        |
+| `-v, --video`       | Входной видео‑файл                                        | `data/videos/SAR.mp4`   |
+| `-s, --save`        | Путь для сохранения выходного видео                       | `data/result.mp4`       |
+| `-S, --show`        | Показывать кадры онлайн вместо сохранения изображений     | выкл.                   |
+| `-c, --conf`        | Порог уверенности (0.0–1.0)                               | `0.01`                  |
+| `--imgsz`           | Ключ размера изображения (`sd`, `s1K`, `s2K`, `s4K`)      | `s1K`                   |
+| `--skip_frames`     | Пропускать кадры для ускорения обработки                  | `0`                     |
+| `--start_frame`     | Начать обработку с указанного кадра                       | `0`                     |
 
-### Tracking Options (mode=`tracking`)
+### Опции трекинга (`tracking`)
 
-| Option            | Description                         | Default |
-| ----------------- | ----------------------------------- | ------- |
-| `--draw_lines`    | Draw trajectories on screen         | off     |
-| `--lines_history` | Number of frames to keep in history | `50`    |
+| Опция              | Описание                                        | По умолчанию |
+| ------------------ | ----------------------------------------------- | ------------ |
+| `--draw_lines`     | Рисовать траектории                             | выкл.        |
+| `--lines_history`  | Количество кадров в истории траектории          | `50`         |
 
-### Heatmap Options (mode=`heatmap`)
+### Опции тепловой карты (`heatmap`)
 
-| Option     | Description                        | Default |
-| ---------- | ---------------------------------- | ------- |
-| `--alpha`  | Heatmap overlay strength (0.0–1.0) | `0.4`   |
-| `--radius` | Radius of each detection circle    | `15`    |
-| `--blur`   | Apply Gaussian blur to heatmap     | on      |
+| Опция       | Описание                                    | По умолчанию |
+| ----------- | ------------------------------------------- | ------------ |
+| `--alpha`   | Прозрачность наложения (0.0–1.0)            | `0.4`        |
+| `--radius`  | Радиус круга каждой детекции                | `15`         |
+| `--blur`    | Применять ли Gaussian‑blur к тепловой карте | вкл.         |
 
 ---
 
-## GUI Usage
+## GUI
 
-The `gui.py` script launches a PyQt5-based interface:
+Скрипт `gui.py` запускает интерфейс на PyQt5:
 
 ```bash
 python gui.py
 ```
 
-Through the GUI, you can:
+В GUI можно:
 
-* Select mode (Tracking, Predict, Heatmap).
-* Browse for model, input video, and output file paths.
-* Adjust sliders and options in real-time.
-* Start, pause, resume, and stop processing.
-* View live video, progress bar, stats (current count, total, coverage, FPS), and logs.
-
----
-
-## Customization
-
-* **Bounding box color & thickness**: Modify `HandlerBase.custom_box()` in `handler/base.py`.
-* **Tracker settings**: Tweak thresholds in `models/custom_tracker.yaml`.
-* **HUD display**: Adjust or disable via `counter_box`, `info_box`, and `_draw_hud` methods.
+* Выбрать режим (Tracking, Predict, Heatmap).
+* Указать пути к модели, видео и файлу вывода.
+* Настраивать параметры в реальном времени.
+* Запускать, ставить на паузу и останавливать обработку.
+* Смотреть видео, прогресс, статистику (кол‑во, покрытие, FPS) и логи.
 
 ---
 
-## License
+## Кастомизация
 
-This project is released under the MIT License. See [LICENSE](LICENSE) for details.
+* **Цвет и толщина рамок**: измените `HandlerBase.custom_box()` в `handler/base.py`.
+* **Настройки трекера**: поправьте параметры в `models/custom_tracker.yaml`.
+* **HUD‑элементы**: настройка через `counter_box`, `info_box` и метод `_draw_hud`.
+
+---
+
+## Лицензия
+
+Проект распространяется под лицензией MIT. См. файл [LICENSE](LICENSE) для подробностей.
