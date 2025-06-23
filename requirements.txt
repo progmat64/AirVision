@@ -1,1 +1,11 @@
-ultralytics==8.3.145
+matplotlib==3.10.3
+numpy==2.3.0
+opencv_python==4.11.0.86
+PyQt5==5.15.11
+PyQt5_sip==12.17.0
+PyYAML==6.0.2
+PyYAML==6.0.2
+torch==2.7.1
+torchvision==0.22.1
+tqdm==4.67.1
+ultralytics==8.3.151
